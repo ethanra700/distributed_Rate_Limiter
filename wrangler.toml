@@ -1,0 +1,14 @@
+name = "edge-rate-limiter"
+main = "src/index.ts"
+compatibility_date = "2026-03-22"
+
+[[kv_namespaces]]
+binding = "POLICY_KV"
+id = "local-mock-id"
+
+[durable_objects]
+bindings = [{ name = "RATE_LIMITER_DO", class_name = "RateLimiter" }]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["RateLimiter"]
