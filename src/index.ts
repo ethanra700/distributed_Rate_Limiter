@@ -6,6 +6,13 @@ export default {
     console.log("checking IP:", clientIP);
     const customPolicy = await env.POLICY_KV.get(`policy:${clientIP}`);
     if (customPolicy === 'blocked') return new Response('Access Denied', { status: 403 });
+    
+    const doId = env.RATE_LIMITER_DO.idFromName(clientIP);
+    const stub = env.RATE_LIMITER_DO.get(doId);
+    const doRequest = new Request(request.url, { method: 'POST' });
+    const limitCheck = await stub.fetch(doRequest);
+    const result: RateLimitResponse = await limitCheck.json();
+    
     return new Response('Origin Response Success', { status: 200 });
   }
 };
