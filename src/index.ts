@@ -13,6 +13,10 @@ export default {
     const limitCheck = await stub.fetch(doRequest);
     const result: RateLimitResponse = await limitCheck.json();
     
+    if (!result.allowed) {
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      return new Response('Rate Limit Exceeded', { status: 429, headers: { 'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString() } });
+    }
     return new Response('Origin Response Success', { status: 200 });
   }
 };
